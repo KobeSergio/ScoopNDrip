@@ -1,0 +1,55 @@
+﻿@model InventoryManagementSystem.Models.series
+@{
+    Layout = "";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+    }
+}
+@using (Html.BeginForm("_EditSeries", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edit Series</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group" hidden>
+            @Html.LabelFor(model => model.series_id, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.series_id, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.series_id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="ui-controlgroup-label"> Enter New Series Name: </label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.series_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.series_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="ui-controlgroup-label"> Enter New Series Information: </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.series_info, new { @class = "form-control", @rows = "4" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10"> 
+                <button type="submit" value="Save" class="btn btn-default" onclick=" return confirm('Are you sure you want to Overwrite Series @Model.series_name ?')">Save</button>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,125 @@
+﻿ 
+@model IEnumerable<InventoryManagementSystem.Models.order>
+@{
+    ViewBag.Title = "TransactionHistory";
+
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+    }
+} 
+<link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Transaction Reports</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href=@Url.Action("InventoryDashboard", "Admin")>Home</a></li>
+                        <li class="breadcrumb-item"><a href=@Url.Action("InventoryDashboard", "Admin")>Inventory Dashboard</a></li>
+                        <li class="breadcrumb-item active">Transaction History</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+    </section>
+    <section class="content"> 
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Table of Transactions</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="col-sm-12">
+                    <table id="table1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                        <colgroup>
+                            <col span="1" style="width: 16%;">
+                            <col span="1" style="width: 5%;">
+                            <col span="1" style="width: 10%;">
+                            <col span="1" style="width: 10%;">
+                            <col span="1" style="width: 5%;">
+                            <col span="1" style="width: 16%;">
+                        </colgroup>
+                        <thead>
+                            <tr role="row">
+                                <th>Datetime</th>
+                                <th>Transaction ID</th>
+                                <th>Product</th>
+                                <th>Series</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr role="row" class="odd">
+                                    <td>@Html.DisplayFor(model => item.order_timestamp)</td>
+                                    <td>@Html.DisplayFor(model => item.order_id)</td>
+                                    <td>@Html.DisplayFor(model => item.order_productName)</td>
+                                    <td>@Html.DisplayFor(model => item.order_series)</td>
+                                    <td>@Html.DisplayFor(model => item.order_quantity)</td>
+                                    <td>₱@Html.DisplayFor(model => item.order_price)</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Datetime</th>
+                                <th>Transaction ID</th>
+                                <th>Product</th>
+                                <th>Series</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="col-sm-12">
+                    <p class="float-lg-right">@Html.ActionLink("Export Transactions", "TransExportToCSV")</p>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>  
+    </section>
+</div>
+
+<script src="~/plugins/datatables/jquery.dataTables.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+<script>
+    $(document).ready(function () { 
+        $('#table1').DataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+                    $('#invTable input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,150 @@
+﻿@model InventoryManagementSystem.Models.product
+@{
+    Layout = "";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Employee/PointOfSales");
+        }
+    }
+}
+@using (Html.BeginForm("_AddNewProduct", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div hidden>
+        @Html.EditorFor(model => model.product_series, new { htmlAttributes = new { @class = "form-control" } })
+    </div> 
+    <div class="form-horizontal" style="overflow: scroll; height: 560px; overflow-x: hidden;">
+        <label class="col-form-label-lg col-md-12">New Product</label>
+        <div class="form-group">
+            <label class="ui-controlgroup-label col-md-2">Name</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.product_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.product_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="ui-controlgroup-label col-md-2">Price</label>
+            <div class="col-md-10">
+                <div class="row">
+                    <b style="margin-left: 20px; margin-top: 10px">Php. </b>
+                    @Html.EditorFor(model => model.product_price, new { htmlAttributes = new { @class = "form-control col-md-8", @style = "margin-left: 10px;" } })
+                </div>
+                @Html.ValidationMessageFor(model => model.product_price, "", new { @class = "text-danger" })
+            </div>
+            </div>
+
+            <div class="form-group">
+                <label class="ui-controlgroup-label col-md-2">Narration</label>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.product_narration, new { @class = "form-control", @rows = "4" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="ui-controlgroup-label col-md-2">Ingredients</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label style="margin-left: 5px">Amount</label>
+
+                    </div>
+                    <div class="col-md-3">
+                        <label style="margin-left: 5px">&nbsp</label>
+                    </div>
+                    <div class="row" id="ingredientsContainer">
+
+                        @Html.DropDownListFor(model => model.ingredients, new SelectList(ViewBag.Ingredients), "Select Ingredients", new { @class = "form-control col-6", @id = "ingredientLists", @style = "margin-bottom: 5px; margin-left: 15px; display:none"})
+                        
+
+                        @Html.TextBoxFor(model => model.amounts, new { @class = "form-control col-3", @id = "ingredientAmount", @style = "margin-bottom: 5px; margin-left: 5px", @type = "hidden", @required = "required"})
+                        
+                    </div> 
+                        <div class="col-5" style="margin-left: 15px">
+                            @Html.ValidationMessageFor(model => model.ingredients, "", new { @class = "text-danger"}) 
+                        </div>
+                        <div class="col-4">
+                            @Html.ValidationMessageFor(model => model.amounts, "", new { @class = "text-danger", @style = "margin-left: 10px" }) 
+                        </div> 
+                </div>
+                <div class="col-lg-12" style="margin-left: 10px;">
+                    <a class="col-form-label-sm" onclick="AddTextBox()"> Add more ingredients <i class="fa fa-plus-circle"></i> </a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputFile">Insert Product Image (Optional)</label>
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="product_imagePath" id="product_imagePath">
+                        <label class="custom-file-label" for="series_imageFile">Choose file</label>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="">Upload</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+}
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> 
+<script type="text/javascript">
+        function getIngredientDdl(value) {
+            var div = $("<div />").attr("class", "row");
+
+            var dropdownList = $("#ingredientLists").clone().attr("style", "margin-bottom: 5px; margin-left: 30px");
+            div.append(dropdownList);
+
+            var textBox = $("#ingredientAmount").clone().attr("style", "margin-bottom: 5px; margin-left: 5px").removeAttr("type", "hidden");
+            div.append(textBox);
+
+            var button = $("<button />").attr("type", "button").attr("class", "btn btn-block btn-default col-2").attr("style", "margin-bottom: 5px; margin-left: 5px").text("Remove");
+            button.attr("onclick", "RemoveTextBox(this)");
+            div.append(button);
+
+            return div;
+        }
+
+        function AddTextBox() {
+            var div = getIngredientDdl("");
+            $("#ingredientsContainer").append(div);
+        }
+
+        function RemoveTextBox(button) {
+            $(button).parent().remove();
+        }
+
+        $(function () {
+            var values = eval('@Html.Raw(ViewBag.Values)');
+            if (values != null) {
+                $("#ingredientsContainer").html("");
+                $(values).each(function () {
+                    $("#ingredientsContainer").append(getIngredientDdl(this));
+                });
+            } 
+        });
+</script>
+
+<script src="~/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+</script>
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script> 

@@ -1,0 +1,150 @@
+﻿@model IEnumerable<InventoryManagementSystem.Models.user>
+
+@{
+    ViewBag.Title = "UserManagement";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+    }
+}
+@if (Session["UserStatus"] != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function () {
+            alert("@Session["StatusMsg"]");
+        };
+    </script>
+    Session["UserStatus"] = null;
+}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">User Management</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">User Management</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body table-responsive p-2">
+                    <h2 class="align-items-center"><b>List Of Users</b></h2>
+                    <table class="table table-striped" style="table-layout:auto; width:100%; height:100%; border:2px groove;">
+                        <tr>
+                            <th></th>
+                            <th>
+                                <label>Full Name</label>
+                            </th>
+                            <th>
+                                <label>Nickname</label>
+                            </th>
+                            <th>
+                                <label>Username</label>
+                            </th>
+                            <th colspan="2">
+                                <label>Email</label>
+                            </th>
+                            <th colspan="2">
+                                <label>Contact Number</label>
+                            </th>
+                            <th colspan="2">
+                                <label>Address</label>
+                            </th>
+                            <th>
+                                <label>Last Log-In</label>
+                            </th>
+                            <th>
+                                <label>Role</label>
+                            </th>
+                            <th></th>
+                        </tr>
+                        
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (item.user_imd != null)
+                                    {
+                                        var base64 = Convert.ToBase64String(item.user_imd);
+                                        var imgSrc = string.Format("data:image/gif; base64, {0}", base64);
+                                        <img style="margin-left:10px;"src='@imgSrc' class="img-circle elevation-2" alt="User Image" width="65rem" height="65rem">
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.user_name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.user_nickname)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.user_username)
+                                </td>
+                                <td colspan="2">
+                                    @Html.DisplayFor(modelItem => item.user_email)
+                                </td>
+                                <td colspan="2">
+                                    @Html.DisplayFor(modelItem => item.user_contact)
+                                </td>
+                                <td colspan="2">
+                                    @Html.DisplayFor(modelItem => item.user_address)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.user_timestamp)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.user_role)
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-grid gap-2 ">
+                                        <a href="@Url.Action("EditUser", "Admin", new { id = item.user_id })" style="margin-bottom: 10px; height: 50%;" class="p-2 btn btn-success btn-group-sm" >&ensp; Edit&ensp;<i class="fa fa-user-edit"></i></a>
+
+                                        <a href="@Url.Action("DeleteUser", "Admin", new { id = item.user_id })" data-toggle="lightbox" class="p-2 btn btn-danger btn-group-sm" style="margin-bottom: 10px; height: 50%;">Delete <i class="fa fa-user-alt-slash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <div class="d-grid mx-auto float-lg-right" style="margin-bottom: 20px; margin-top: 20px; margin-left: 20px">
+                        <a href=@Url.Action("CreateUser", "Admin") ; value="Show Tables" class="p-2 btn btn-primary">Create New User&ensp;<i class="fa fa-user"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/plugins/ekko-lightbox/ekko-lightbox.min.js">arguments</script>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+                onShow: function () {
+                    $('.modal-dialog').attr("style", "height: 38.875rem")
+                    $('.modal-body').attr("style", "height: 38.625rem")
+                }
+            });
+        });
+    });
+</script>  

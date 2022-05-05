@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IMSDatabaseModel1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="orders">
+    <Key>
+      <PropertyRef Name="order_ID" />
+    </Key>
+    <Property Name="order_ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="order_productID" Type="tinyint" />
+    <Property Name="order_price" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="order_quantity" Type="smallint" />
+    <Property Name="order_timestamp" Type="datetime" />
+  </EntityType>
+  <EntityType Name="products">
+    <Key>
+      <PropertyRef Name="product_id" />
+    </Key>
+    <Property Name="product_id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="product_name" Type="varchar" MaxLength="50" />
+    <Property Name="product_price" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="product_series" Type="tinyint" />
+    <Property Name="product_narration" Type="varchar(max)" />
+    <Property Name="product_ingredients" Type="varchar(max)" />
+    <Property Name="product_amounts" Type="varchar(max)" />
+    <Property Name="product_image" Type="image" />
+    <Property Name="product_units" Type="varchar(max)" />
+    <Property Name="product_created" Type="date" />
+  </EntityType>
+  <EntityType Name="series">
+    <Key>
+      <PropertyRef Name="series_id" />
+    </Key>
+    <Property Name="series_id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="series_name" Type="varchar" MaxLength="50" />
+    <Property Name="series_info" Type="varchar(max)" />
+    <Property Name="series_created" Type="date" />
+  </EntityType>
+  <EntityType Name="stocks">
+    <Key>
+      <PropertyRef Name="stock_id" />
+    </Key>
+    <Property Name="stock_id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="stock_name" Type="varchar" MaxLength="50" />
+    <Property Name="stock_category" Type="varchar" MaxLength="50" />
+    <Property Name="stock_unit" Type="varchar" MaxLength="50" />
+    <Property Name="stock_quantity" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="stock_narration" Type="varchar(max)" />
+    <Property Name="stock_capacity" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="stockTrans">
+    <Key>
+      <PropertyRef Name="stockTrans_id" />
+    </Key>
+    <Property Name="stockTrans_id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="stockTrans_stock" Type="tinyint" />
+    <Property Name="stockTrans_timestamp" Type="datetime" />
+    <Property Name="stockTrans_narration" Type="varchar(max)" />
+    <Property Name="stockTrans_type" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_username" Type="varchar" MaxLength="50" />
+    <Property Name="user_pass" Type="varchar" MaxLength="50" />
+    <Property Name="user_role" Type="varchar" MaxLength="50" />
+    <Property Name="user_name" Type="varchar" MaxLength="50" />
+    <Property Name="user_address" Type="varchar" MaxLength="50" />
+    <Property Name="user_email" Type="varchar" MaxLength="50" />
+    <Property Name="user_status" Type="bit" />
+    <Property Name="user_contact" Type="int" />
+    <Property Name="user_timestamp" Type="datetime" />
+    <Property Name="user_img" Type="image" />
+    <Property Name="user_nickname" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_order_products">
+    <End Role="products" Type="Self.products" Multiplicity="0..1" />
+    <End Role="orders" Type="Self.orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="orders">
+        <PropertyRef Name="order_productID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="IMSDatabaseModel1StoreContainer">
+    <EntitySet Name="orders" EntityType="Self.orders" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="products" EntityType="Self.products" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="series" EntityType="Self.series" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="stocks" EntityType="Self.stocks" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="stockTrans" EntityType="Self.stockTrans" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_order_products" Association="Self.FK_order_products">
+      <End Role="products" EntitySet="products" />
+      <End Role="orders" EntitySet="orders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

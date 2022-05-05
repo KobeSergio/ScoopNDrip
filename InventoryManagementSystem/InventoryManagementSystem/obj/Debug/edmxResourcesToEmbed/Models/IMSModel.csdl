@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IMSDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="Byte" Nullable="false" />
+    <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_pass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_status" Type="Boolean" />
+    <Property Name="user_contact" Type="Int32" />
+    <Property Name="user_timestamp" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityContainer Name="IMSDatabaseEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="users" EntityType="Self.user" />
+    <FunctionImport Name="st_getAllUsers" ReturnType="Collection(IMSDatabaseModel.st_getAllUsers_Result)" />
+  </EntityContainer>
+  <ComplexType Name="st_getAllUsers_Result">
+    <Property Type="Byte" Name="user_id" Nullable="false" />
+    <Property Type="String" Name="user_name" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="user_pass" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="user_role" Nullable="true" MaxLength="50" />
+  </ComplexType>
+</Schema>

@@ -1,0 +1,161 @@
+public partial class order
+    {
+        //Database Constructors
+        public byte order_id { get; set; }
+        public Nullable<byte> order_productID { get; set; }
+        public Nullable<decimal> order_price { get; set; }
+        public Nullable<int> order_quantity { get; set; }
+        public Nullable<System.DateTime> order_timestamp { get; set; }
+
+        //Local Constructors
+        public string order_productName { get; set; }
+        public string order_series { get; set; }
+
+        public virtual product product { get; set; }
+    }
+
+public partial class product
+    {
+        //Database Constructors
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public product()
+        {
+            this.orders = new HashSet<order>();
+        }
+        public byte product_id { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [Required(ErrorMessage = "This field is required.")]
+        public string product_name { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [Required(ErrorMessage = "This field is required.")]
+        public Nullable<decimal> product_price { get; set; }
+
+        public Nullable<byte> product_series { get; set; }
+        public string product_narration { get; set; }
+        public string product_ingredients { get; set; }
+        public string product_amounts { get; set; }
+        public byte[] product_image { get; set; }
+        public string product_units { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> product_created { get; set; }
+
+        //Local Constructors
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [Required(ErrorMessage = "This field is required.")]
+        public List<string> ingredients { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = true)]
+        [Required(ErrorMessage = "This field is required.")]
+        public List<string> amounts { get; set; } 
+        public bool isAvailable { get; set; }
+        public string ingredientString { get; set; }
+
+        //Database generated
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<order> orders { get; set; }
+        public virtual series series { get; set; }
+    }
+
+public partial class series
+    {
+        //Database generated 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public series()
+        {
+            this.products = new HashSet<product>();
+        }
+
+        public byte series_id { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [Required(ErrorMessage = "This field is required.")]
+        public string series_name { get; set; }
+        public string series_info { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+        public Nullable<System.DateTime> series_created { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<product> products { get; set; }
+    }
+
+public partial class stock
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public stock()
+        {
+            this.stockTrans = new HashSet<stockTran>();
+        }
+
+        //Database Constructors
+        public byte stock_id { get; set; }
+        public string stock_name { get; set; }
+        public string stock_category { get; set; }
+        public string stock_unit { get; set; }
+        public Nullable<decimal> stock_quantity { get; set; }
+        public string stock_narration { get; set; }
+        public Nullable<decimal> stock_capacity { get; set; }
+
+        //Local Constructors
+        public Nullable<System.DateTime> stock_date { get; set; }
+        public int stock_warning { get; set; }
+        public decimal percentage { get; set; }
+        public decimal toAdd { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<stockTran> stockTrans { get; set; }
+    }
+
+public partial class stockTran
+    {
+        //Database Constructors
+        public byte stockTrans_id { get; set; }
+        public Nullable<byte> stockTrans_stock { get; set; }
+        public Nullable<System.DateTime> stockTrans_timestamp { get; set; }
+        public string stockTrans_narration { get; set; }
+        public string stockTrans_type { get; set; }
+        public Nullable<decimal> stockTrans_value { get; set; }
+
+        //Local Constructors
+        public string stockTrans_stockName { get; set; }
+        public string stockTrans_stockCategory { get; set; }
+        public string stockTrans_stockUnit { get; set; }
+
+        public virtual stock stock { get; set; }
+    }
+
+
+public partial class user
+    {
+        //Database Constructors
+        public byte user_id { get; set; }
+        [Required(ErrorMessage = "Please Enter Username")] 
+        public string user_username { get; set; }
+        [Required(ErrorMessage = "Please Enter Password")] 
+        public string user_pass { get; set; }
+        [Required(ErrorMessage = "Please Enter Role")]
+        public string user_role { get; set; }
+        [Required(ErrorMessage = "Please Enter Name")]
+        public string user_name { get; set; }
+        public string user_address { get; set; }
+        [Required(ErrorMessage = "Please Enter Email")]
+        public string user_email { get; set; } 
+        [Required(ErrorMessage = "Please Enter 11 Digit Contact Number")]
+        [StringLength(11, MinimumLength = 10, ErrorMessage = "The Number Entered is either too long or too short")]
+        [MaxLength(11)]
+        public string user_contact { get; set; }
+        public string user_timestamp { get; set; }
+        public byte[] user_img { get; set; }
+        public string user_nickname { get; set; }
+
+        //Local Constructors
+        public HttpPostedFileBase ImageFile { get; set; }
+
+        [Required(ErrorMessage = "Please Enter Nickname")] 
+        public string LoginErrorMessage { get; set; }
+    }

@@ -1,0 +1,69 @@
+﻿@model InventoryManagementSystem.Models.stock
+@{
+    Layout = "";
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+    }
+}
+@using (Html.BeginForm("EditStock", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group" hidden>
+        @Html.EditorFor(model => model.stock_id, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+
+    <div class="card card-blue">
+        <div class="card-header">
+            <h3 class="card-title">Edit Stock</h3>
+        </div>
+        <!-- .card-body -->
+        <div class="card-body">
+            <div class="form-group">
+                <label>Edit Stock Name</label>
+                @Html.EditorFor(model => model.stock_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_name, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Edit Stock Category</label>
+                @Html.EditorFor(model => model.stock_category, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_category, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Edit Stock Quantity</label>
+                @Html.EditorFor(model => model.stock_quantity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_quantity, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Edit Stock Unit</label>
+                @Html.EditorFor(model => model.stock_unit, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_unit, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Edit Stock Capacity</label>
+                @Html.EditorFor(model => model.stock_capacity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_capacity, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label>Edit Stock Narration</label>
+                @Html.EditorFor(model => model.stock_narration, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock_narration, "", new { @class = "text-danger" })
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <button type="submit" value="Submit" class="btn btn-primary float-right">Overwrite</button>
+        </div>
+        <!-- /.card-footer-->
+    </div>
+}

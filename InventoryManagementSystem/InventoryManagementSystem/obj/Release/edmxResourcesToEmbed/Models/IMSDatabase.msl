@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="IMSDatabaseModelStoreContainer" CdmEntityContainer="IMSDatabaseEntities">
+    <EntitySetMapping Name="orders">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.order">
+        <MappingFragment StoreEntitySet="orders">
+          <ScalarProperty Name="order_id" ColumnName="order_id" />
+          <ScalarProperty Name="order_productID" ColumnName="order_productID" />
+          <ScalarProperty Name="order_price" ColumnName="order_price" />
+          <ScalarProperty Name="order_quantity" ColumnName="order_quantity" />
+          <ScalarProperty Name="order_timestamp" ColumnName="order_timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.product">
+        <MappingFragment StoreEntitySet="products">
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+          <ScalarProperty Name="product_name" ColumnName="product_name" />
+          <ScalarProperty Name="product_price" ColumnName="product_price" />
+          <ScalarProperty Name="product_series" ColumnName="product_series" />
+          <ScalarProperty Name="product_narration" ColumnName="product_narration" />
+          <ScalarProperty Name="product_ingredients" ColumnName="product_ingredients" />
+          <ScalarProperty Name="product_amounts" ColumnName="product_amounts" />
+          <ScalarProperty Name="product_image" ColumnName="product_image" />
+          <ScalarProperty Name="product_units" ColumnName="product_units" />
+          <ScalarProperty Name="product_created" ColumnName="product_created" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="series">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.series">
+        <MappingFragment StoreEntitySet="series">
+          <ScalarProperty Name="series_id" ColumnName="series_id" />
+          <ScalarProperty Name="series_name" ColumnName="series_name" />
+          <ScalarProperty Name="series_info" ColumnName="series_info" />
+          <ScalarProperty Name="series_created" ColumnName="series_created" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="stocks">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.stock">
+        <MappingFragment StoreEntitySet="stocks">
+          <ScalarProperty Name="stock_id" ColumnName="stock_id" />
+          <ScalarProperty Name="stock_name" ColumnName="stock_name" />
+          <ScalarProperty Name="stock_category" ColumnName="stock_category" />
+          <ScalarProperty Name="stock_unit" ColumnName="stock_unit" />
+          <ScalarProperty Name="stock_quantity" ColumnName="stock_quantity" />
+          <ScalarProperty Name="stock_narration" ColumnName="stock_narration" />
+          <ScalarProperty Name="stock_capacity" ColumnName="stock_capacity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="stockTrans">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.stockTran">
+        <MappingFragment StoreEntitySet="stockTrans">
+          <ScalarProperty Name="stockTrans_value" ColumnName="stockTrans_value" />
+          <ScalarProperty Name="stockTrans_id" ColumnName="stockTrans_id" />
+          <ScalarProperty Name="stockTrans_stock" ColumnName="stockTrans_stock" />
+          <ScalarProperty Name="stockTrans_timestamp" ColumnName="stockTrans_timestamp" />
+          <ScalarProperty Name="stockTrans_narration" ColumnName="stockTrans_narration" />
+          <ScalarProperty Name="stockTrans_type" ColumnName="stockTrans_type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="users">
+      <EntityTypeMapping TypeName="IMSDatabaseModel.user">
+        <MappingFragment StoreEntitySet="users">
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="user_username" ColumnName="user_username" />
+          <ScalarProperty Name="user_pass" ColumnName="user_pass" />
+          <ScalarProperty Name="user_role" ColumnName="user_role" />
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
+          <ScalarProperty Name="user_address" ColumnName="user_address" />
+          <ScalarProperty Name="user_email" ColumnName="user_email" />
+          <ScalarProperty Name="user_contact" ColumnName="user_contact" />
+          <ScalarProperty Name="user_timestamp" ColumnName="user_timestamp" />
+          <ScalarProperty Name="user_nickname" ColumnName="user_nickname" />
+          <ScalarProperty Name="user_imd" ColumnName="user_imd" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

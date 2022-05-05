@@ -1,0 +1,523 @@
+﻿@{
+    ViewBag.Title = "InventoryDashboard";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Employee/PointOfSales");
+        }
+    }
+}
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Dashboard</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href=@Url.Action("GenReport", "Admin")>Home</a></li>
+                        <li class="breadcrumb-item active">Transactions</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header ui-sortable-handle">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Sales
+                        </h3>
+                        <div class="card-tools">
+                            <ul class="nav nav-pills ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#overallMonthly" data-toggle="tab">Monthly</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#overallYearly" data-toggle="tab">Yearly</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content p-0">
+                            <!-- Morris chart - Sales -->
+                            <div class="chart tab-pane active" id="overallMonthly" style="position: relative;">
+                                <div class="d-flex">
+                                    <p class="d-flex flex-column">
+                                        <span id="mSalesSUM" class="text-bold text-lg"></span>
+                                        <span id="mSalesSUMLABEL"></span>
+                                    </p>
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <select name="msalesddl" id="msalesddl">
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
+                                        <select name="msalesddlyear" id="msalesddlyear">
+                                            @foreach (var i in ViewBag.availableYears)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </p>
+                                </div>
+                                <!-- /.d-flex -->
+                                <div class="position-relative mb-4">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <canvas id="msalesChart" height="300" style="display: block; height: 200px; width: 472px;" width="944" class="chartjs-render-monitor"></canvas>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <div class="d-flex flex-row justify-content-end">
+                                            <a href="@Url.Action("TransactionHistory", "Admin")">View Report</a>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="chart tab-pane" id="overallYearly" style="position: relative;">
+                                <div class="d-flex">
+                                    <p class="d-flex flex-column">
+                                        <span id="ySalesSUM" class="text-bold text-lg"></span>
+                                        <span id="ySalesSUMLABEL"></span>
+                                    </p>
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <select name="ysalesddlyear" id="ysalesddlyear">
+                                            @foreach (var i in ViewBag.availableYears)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </p>
+                                </div>
+                                <!-- /.d-flex -->
+                                <div class="position-relative mb-4">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <canvas id="ysalesChart" height="300" style="display: block; height: 200px; width: 472px;" width="944" class="chartjs-render-monitor"></canvas>
+                                </div>
+                                <div class="d-flex">
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <div class="d-flex flex-row justify-content-end">
+                                            <a href="@Url.Action("TransactionHistory", "Admin")">View Report</a>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="info-box mb-3 bg-cyan" style="height: 150px">
+                    <span class="info-box-icon"><i class="fas fa-bell"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Sales this year</span>
+                        <span class="info-box-number">@ViewBag.SalesThisYear</span>
+                        <span class="info-box-number">@ViewBag.SalesThisYearGross</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <div class="info-box mb-3 bg-gradient-olive" style="height: 150px">
+                    <span class="info-box-icon"><i class="fas fa-bell"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Sales this month</span>
+                        <span class="info-box-number">@ViewBag.SalesThisMonth</span>
+                        <span class="info-box-number">@ViewBag.SalesThisMonthGross</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <div class="info-box mb-3 bg-gradient-navy" style="height: 150px">
+                    <span class="info-box-icon"><i class="fas fa-bell"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Sales Today</span>
+                        <span class="info-box-number">@ViewBag.SalesToday</span>
+                        <span class="info-box-number">@ViewBag.SalesTodayGross</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title"><i class="fa fa-coffee mr-1"></i> Products Sold</h3>
+                        <div class="card-tools">
+                            <a href="@Url.Action("ProdsExportToCSV", "Admin")" class="btn btn-tool btn-sm">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0"  style="overflow: scroll; max-height: 461px; overflow-y: auto; overflow-x: hidden;">
+                        <table id="productSold" class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th class="sorting" aria-controls="productSold">Product</th>
+                                    <th class="sorting" aria-controls="productSold">Price</th>
+                                    <th class="sorting" aria-controls="productSold">Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.ProductsSold)
+                                {
+                                    <tr role="row" class="odd">
+                                        <td>@item.product</td>
+                                        <td>Php. @item.price</td>
+                                        <td>@item.sales</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header ui-sortable-handle" style="height: 55.4px;">
+                        <h3 class="card-title">
+                            <i class="fa fa-coffee mr-1"></i>
+                            Product Sales
+                        </h3>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content p-0">
+                            <!-- YEARLY PRODUCTS -->
+                            <div class="d-flex">
+                                <p class="d-flex flex-column">
+                                    <span id="ProductSUM" class="text-bold text-lg"></span>
+                                    <span id="ProductSUMLABEL"></span>
+                                </p>
+                                <p class="ml-auto d-flex flex-column text-right">
+                                    <select name="productddl" id="productddl">
+                                        <option value="1">Products</option>
+                                        <option value="2">Series</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="position-relative mb-4">
+                                <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                <canvas id="productChart" height="400" style="display: block; height: 200px; width: 472px;" width="944" class="chartjs-render-monitor"></canvas>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </section>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js" integrity="sha512-uWk2ZXl3GVrq6DZsrL5dSg1S/F3MNQ9VaDFigqXOoKUnWG58UxOuJGfTrzh5KjpoBvPiFniL2PahU2HUTFMJXw==" crossorigin="anonymous"></script>
+<!-- #region GRAPHS -->
+<script>
+    $(document).ready(function () {
+        var monthlySales = document.getElementById('msalesChart').getContext('2d');
+        var msalesChart = new Chart(monthlySales, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: false,
+                    fill: false,
+                    data: [],
+                    borderColor: [
+                        'rgba(0,31,77,1)'
+                    ],
+                    borderWidth: 1.5
+                }]
+            },
+            options: {
+                tooltips: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Days'
+                        },
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Gross Income (Php.)'
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+            }
+        })
+
+        var yearlySales = document.getElementById('ysalesChart').getContext('2d');
+        var ysalesChart = new Chart(yearlySales, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: false,
+                    fill: false,
+                    data: [],
+                    borderColor: [
+                        'rgba(0,36,27,1)'
+                    ],
+                    borderWidth: 1.5
+                }]
+            },
+            options: {
+                tooltips: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Month'
+                        },
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Gross Income (Php.)'
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+            }
+        })
+
+        //FOR YEARLY TAB
+        var yselectedYear = $("#ysalesddlyear option:selected").val();
+        $.ajax({
+            type: "POST",
+            url: "/Admin/YearlySales",
+            data: '{ year: ' + yselectedYear + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                $("#ySalesSUM").text("Php. " + r.total.toFixed(2));
+                $("#ySalesSUMLABEL").text(r.totalLabel + " " + $("#ysalesddlyear option:selected").text())
+
+                ysalesChart.data.labels = r.datalabels
+                ysalesChart.data.datasets[0].data = r.dataset
+                ysalesChart.update()
+            }
+        });
+
+        $("#ysalesddlyear").change(function () {
+            yselectedMonth = $("#ysalesddl option:selected").val()
+            yselectedYear = $("#ysalesddlyear option:selected").val()
+            $.ajax({
+                type: "POST",
+                url: "/Admin/YearlySales",
+                data: '{ year: ' + yselectedYear + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $("#ySalesSUM").text("Php. " + r.total.toFixed(2));
+                    $("#ySalesSUMLABEL").text(r.totalLabel + " " + $("#ysalesddlyear option:selected").text())
+
+                    ysalesChart.data.labels = r.datalabels
+                    ysalesChart.data.datasets[0].data = r.dataset
+                    ysalesChart.update()
+                }
+            });
+        });
+
+        //FOR MONTHLY SALES TAB
+        var mselectedMonth = $("#msalesddl option:selected").val();
+        var mselectedYear = $("#msalesddlyear option:selected").val();
+        $.ajax({
+            type: "POST",
+            url: "/Admin/MonthlySales",
+            data: '{ month : ' + mselectedMonth + ', year: ' + mselectedYear + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                $("#mSalesSUM").text("Php. " + r.total.toFixed(2));
+                $("#mSalesSUMLABEL").text(r.totalLabel + " " + $("#msalesddl option:selected").text() + " " + $("#msalesddlyear option:selected").text())
+
+                msalesChart.data.labels = r.datalabels
+                msalesChart.data.datasets[0].data = r.dataset
+                msalesChart.update()
+            }
+        });
+
+        $("#msalesddl").change(function () {
+            mselectedMonth = $("#msalesddl option:selected").val()
+            mselectedYear = $("#msalesddlyear option:selected").val()
+            $.ajax({
+                type: "POST",
+                url: "/Admin/MonthlySales",
+                data: '{ month : ' + mselectedMonth + ', year: ' + mselectedYear + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $("#mSalesSUM").text("Php. " + r.total.toFixed(2));
+                    $("#mSalesSUMLABEL").text(r.totalLabel + " " + $("#msalesddl option:selected").text() + " " + $("#msalesddlyear option:selected").text())
+
+                    msalesChart.data.labels = r.datalabels
+                    msalesChart.data.datasets[0].data = r.dataset
+                    msalesChart.update()
+                }
+            });
+        });
+        $("#msalesddlyear").change(function () {
+            mselectedMonth = $("#msalesddl option:selected").val()
+            mselectedYear = $("#msalesddlyear option:selected").val()
+            $.ajax({
+                type: "POST",
+                url: "/Admin/MonthlySales",
+                data: '{ month : ' + mselectedMonth + ', year: ' + mselectedYear + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $("#mSalesSUM").text("Php. " + r.total.toFixed(2));
+                    $("#mSalesSUMLABEL").text(r.totalLabel + " " + $("#msalesddl option:selected").text() + " " + $("#msalesddlyear option:selected").text())
+
+                    msalesChart.data.labels = r.datalabels
+                    msalesChart.data.datasets[0].data = r.dataset
+                    msalesChart.update()
+                }
+            });
+        });
+    });
+
+
+    //BAR CHARTS
+    var productChartElement = document.getElementById('productChart').getContext('2d');
+    var productChart = new Chart(productChartElement, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: false,
+                fill: false,
+                data: [],
+                borderColor: [
+                    'rgba(0,36,27,1)'
+                ],
+                borderWidth: 1.5
+            }]
+        },
+        options: {
+            tooltips: false,
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Products"
+                    },
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Gross Income (Php.)'
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                    }
+                }]
+            }
+        }
+    })
+
+    //FOR YEARLY PRODUCTS TAB
+    var productddl = $("#productddl option:selected").val();
+    $.ajax({
+        type: "POST",
+        url: "/Admin/ProductSales",
+        data: '{ option: ' + productddl + '}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (r) {
+            $("#ProductSUM").text("Php. " + r.total.toFixed(2));
+            $("#ProductSUMLABEL").text($("#productddl option:selected").text() + " with the most sales is " + r.totalLabel)
+
+            productChart.options.scales.xAxes[0].scaleLabel.labelString = $("#productddl option:selected").text()
+            productChart.data.labels = r.datalabels
+            productChart.data.datasets[0].data = r.dataset
+            productChart.update()
+        }
+    });
+
+    $("#productddl").change(function () {
+        productddl = $("#productddl option:selected").val()
+        $.ajax({
+            type: "POST",
+            url: "/Admin/ProductSales",
+            data: '{ option: ' + productddl + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                $("#ProductSUM").text("Php. " + r.total.toFixed(2));
+                $("#ProductSUMLABEL").text($("#productddl option:selected").text() + " with the most sales is " + r.totalLabel)
+
+                productChart.options.scales.xAxes[0].scaleLabel.labelString = $("#productddl option:selected").text()
+                productChart.data.labels = r.datalabels
+                productChart.data.datasets[0].data = r.dataset
+                productChart.update()
+            }
+        });
+    });
+</script>
+<!-- #endregion -->
+
+<script src="~/plugins/datatables/jquery.dataTables.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+<script>
+    $(function () {
+        $('#productSold').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": false,
+            "autoWidth": false
+        });
+    });
+</script>

@@ -1,0 +1,158 @@
+﻿@model InventoryManagementSystem.Models.user
+
+@{
+    ViewBag.Title = "EditUser";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+    }
+}   
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">User Management</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">User Management</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+
+                            @using (Html.BeginForm("EditUser", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                            @Html.AntiForgeryToken()
+                            <div class="form-horizontal">
+                                <h4>
+                                    @if (Model.user_imd != null)
+                                        {
+                                            var base64 = Convert.ToBase64String(Model.user_imd);
+                                            var imgSrc = string.Format("data:image/gif; base64, {0}", base64);
+                                    <img src='@imgSrc' class="img-circle elevation-2" alt="User Image" width="160" height="160">
+                                        }
+                                        else
+                                        {
+                                    <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                                        }
+                                    @Html.DisplayFor(model => model.user_nickname)
+
+                                </h4>
+                                <hr />
+                                @Html.HiddenFor(model => model.user_id)
+                                <div class="form-group">
+                                    <label class="col-sm-3">Full Name:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_name, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_name, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3">Nickname:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_nickname, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_nickname, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    <label class="col-sm-3">Username:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_username, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_username, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3">Password:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_pass, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_pass, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3">Email:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_email, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_email, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3">Role:</label>
+                                    <div class="col-md-10">
+                                        <select class="form-control" id="userRole" name="user_role" aria-label="Default select example">
+                                            <option value="Admin">Admin</option>
+                                            <option value="Employee">Employee</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3">Address:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_address, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3">Contact Number:</label>
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.user_contact, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.user_contact, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label class="col-sm-3">User Image:</label>
+                                        <div class="custom-file pmd-custom-file-filled">
+                                            <input type="file" id="image" name="imgEdit" class="custom-file-input" />
+                                            <label class="custom-file-label" for="image">Insert User Image:</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <button type="submit" value="Save" class="btn btn-success">&ensp;SAVE CHANGES &ensp;<i class="fa fa-save"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="~/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+</script>

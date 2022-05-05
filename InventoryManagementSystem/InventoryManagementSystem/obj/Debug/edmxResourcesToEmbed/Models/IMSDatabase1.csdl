@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IMSDatabaseModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="order">
+    <Key>
+      <PropertyRef Name="order_ID" />
+    </Key>
+    <Property Name="order_ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="order_productID" Type="Byte" />
+    <Property Name="order_price" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="order_quantity" Type="Int16" />
+    <Property Name="order_timestamp" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="product" Relationship="Self.FK_order_products" FromRole="orders" ToRole="products" />
+  </EntityType>
+  <EntityType Name="product">
+    <Key>
+      <PropertyRef Name="product_id" />
+    </Key>
+    <Property Name="product_id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="product_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="product_price" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="product_series" Type="Byte" />
+    <Property Name="product_narration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="product_ingredients" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="product_amounts" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="product_image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="product_units" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="product_created" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="orders" Relationship="Self.FK_order_products" FromRole="products" ToRole="orders" />
+  </EntityType>
+  <EntityType Name="series">
+    <Key>
+      <PropertyRef Name="series_id" />
+    </Key>
+    <Property Name="series_id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="series_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="series_info" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="series_created" Type="DateTime" Precision="0" />
+  </EntityType>
+  <EntityType Name="stock">
+    <Key>
+      <PropertyRef Name="stock_id" />
+    </Key>
+    <Property Name="stock_id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="stock_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="stock_category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="stock_unit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="stock_quantity" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="stock_narration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="stock_capacity" Type="Decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="stockTran">
+    <Key>
+      <PropertyRef Name="stockTrans_id" />
+    </Key>
+    <Property Name="stockTrans_id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="stockTrans_stock" Type="Byte" />
+    <Property Name="stockTrans_timestamp" Type="DateTime" Precision="3" />
+    <Property Name="stockTrans_narration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="stockTrans_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_pass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="user_status" Type="Boolean" />
+    <Property Name="user_contact" Type="Int32" />
+    <Property Name="user_timestamp" Type="DateTime" Precision="3" />
+    <Property Name="user_img" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="user_nickname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_order_products">
+    <End Role="products" Type="Self.product" Multiplicity="0..1" />
+    <End Role="orders" Type="Self.order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="orders">
+        <PropertyRef Name="order_productID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="IMSDatabaseEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="orders" EntityType="Self.order" />
+    <EntitySet Name="products" EntityType="Self.product" />
+    <EntitySet Name="series" EntityType="Self.series" />
+    <EntitySet Name="stocks" EntityType="Self.stock" />
+    <EntitySet Name="stockTrans" EntityType="Self.stockTran" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="users" EntityType="Self.user" />
+    <AssociationSet Name="FK_order_products" Association="Self.FK_order_products">
+      <End Role="products" EntitySet="products" />
+      <End Role="orders" EntitySet="orders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

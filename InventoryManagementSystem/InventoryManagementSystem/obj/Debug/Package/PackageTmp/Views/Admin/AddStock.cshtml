@@ -1,0 +1,184 @@
+﻿@model InventoryManagementSystem.Models.stock
+
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Inventory Overview</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Employee")">Home</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("InventoryOverview", "Employee")">Inventory Overview</a></li>
+                        <li class="breadcrumb-item active">Modify Stock</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <section class="content">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Modify Stock</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <!-- Add New Stoc-->
+                        @using (Html.BeginForm("AddStock", "Admin", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="card collapsed-card card-green">
+                                <div class="card-header">
+                                    <h3 class="card-title">Add New Stock</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Stock Name</label>
+                                        @Html.EditorFor(model => model.stock_name, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_name, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock Category</label>
+                                        @Html.EditorFor(model => model.stock_category, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_category, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock Quantity</label>
+                                        @Html.EditorFor(model => model.stock_quantity, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_quantity, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock Unit</label>
+                                        @Html.EditorFor(model => model.stock_unit, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_unit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock Narration</label>
+                                        @Html.EditorFor(model => model.stock_narration, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_narration, "", new { @class = "text-danger" })
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-default" onclick="clearAdd()" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">Cancel</button>
+                                    <button type="submit" class="btn btn-success float-right" value="Submit">Add</button>
+                                </div>
+                                <!-- /.card-footer-->
+                            </div>
+                        }
+                        <!-- /Add New Stock-->
+                    </div>
+
+                    <div class="col-4">
+                        <!-- Edit Stocks-->
+                        @using (Html.BeginForm("EditStock", "Admin", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="card collapsed-card card-blue">
+                                <div class="card-header">
+                                    <h3 class="card-title">Edit Stock</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Stock ID</label>
+                                        @Html.EditorFor(model => model.stock_id, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_id, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Edit Stock Name</label>
+                                        @Html.EditorFor(model => model.stock_name, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_name, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Edit Stock Category</label>
+                                        @Html.EditorFor(model => model.stock_category, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_category, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Edit Stock Quantity</label>
+                                        @Html.EditorFor(model => model.stock_quantity, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_quantity, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Edit Stock Unit</label>
+                                        @Html.EditorFor(model => model.stock_unit, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_unit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Edit Stock Narration</label>
+                                        @Html.EditorFor(model => model.stock_narration, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_narration, "", new { @class = "text-danger" })
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-default" onclick="clearEdit()" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">Cancel</button>
+                                    <button type="submit" value="Submit" class="btn btn-primary float-right">Edit</button>
+                                </div>
+                                <!-- /.card-footer-->
+                            </div>
+                        }
+
+                        <!-- /Edit Stocks-->
+                    </div>
+
+                    <div class="col-4">
+                        <!-- Remove Stock-->
+                        @using (Html.BeginForm("RemoveStock", "Admin", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="card collapsed-card card-red">
+                                <div class="card-header">
+                                    <h3 class="card-title">Remove Stock</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Stock ID</label>
+                                        @Html.EditorFor(model => model.stock_id, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.stock_id)
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-default" onclick="clearRemove()" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">Cancel</button>
+                                    <button type="submit" class="btn btn-danger float-right" value="Submit">Remove</button>
+                                </div>
+                                <!-- /.card-footer-->
+                            </div>
+                        }
+                        <!-- /Remove Stock-->
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </section>
+</div>

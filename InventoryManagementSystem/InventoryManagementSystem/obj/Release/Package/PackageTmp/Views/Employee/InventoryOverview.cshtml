@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "InventoryOverview";
+
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Response.Redirect("~/Shared/Error");
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+        }
+    }
+}
+@if (Session["StatusMsg"] != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function () {
+            alert("@Session["StatusMsg"]");
+        };
+    </script>
+    Session["StatusMsg"] = null;
+}
+<!-- Ekko Lightbox -->
+<link href="~/plugins/ekko-lightbox/ekko-lightbox.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet" />
+<style>
+    th {
+        cursor: pointer;
+    }
+
+    #search {
+        width: 330px;
+        height: 40px;
+    }
+
+    .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+    }
+
+    body {
+        overflow-y: scroll;
+    }
+</style> 
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Inventory Overview</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("PointOfSales", "Employee")">Home</a></li>
+                        <li class="breadcrumb-item active">Inventory Overview</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <section class="content">
+        <div class="card">
+            <div class="card-header">
+                <div style="text-align: center; font-weight:bold; font-size:1.2rem">Stock List</div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <!-- table of stocks -->
+                <div class="row">
+                    <div class="col-12">
+                        <table id="invTable" class="table table-bordered table-hover table-striped" role="grid">
+                            <colgroup>
+                                <col span="1" style="width: 5%;">
+                                <col span="1" style="width: 10%;">
+                                <col span="1" style="width: 10%;">
+                                <col span="1" style="width: 10%;">
+                                <col span="1" style="width: 10%;">
+                                <col span="1" style="width: 1%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Stock ID</th>
+                                    <th>Stock Name</th>
+                                    <th>Stock Category</th>
+                                    <th>Stock Quantity</th>
+                                    <th>Stock Capacity</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var stocks in ViewBag.Stocks)
+                                {
+                                    <tr>
+                                        <td>@stocks.stock_id </td>
+                                        <td>@stocks.stock_name</td>
+                                        <td>@stocks.stock_category.ToString().ToUpper() </td>
+                                        <td>@stocks.stock_quantity.ToString("0") @stocks.stock_unit</td>
+                                        <td>
+                                            <span><b>@stocks.percentage%</b></span>
+                                            <div class="progress-group">
+                                                <div class="progress progress-sm">
+                                                    <div class="progress-bar bg-primary" style="width: @stocks.percentage%"></div>
+                                                </div>
+                                                <span>@stocks.stock_quantity.ToString("0")/@stocks.stock_capacity.ToString("0")</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="row">
+                                                <a style="margin-left: 5px" href="@Url.Action("ReStock", "Employee", new { id = stocks.stock_id })" data-toggle="restock" class="btn btn-dark">Restock</a> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- table of stocks -->
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12"> 
+                        <div class="float-right">
+                            <a href="@Url.Action("AddStock", "Employee")" data-toggle="lightbox" class="btn btn-success float-left">Add new stock <i class="fas fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div> 
+<!-- #region SORTING-->
+<script src="~/plugins/datatables/jquery.dataTables.js"></script>
+<script>
+    $(document).ready(function () { 
+        $('#invTable').DataTable(); 
+    });
+</script>
+<!-- #endregion -->
+
+<script src="~/plugins/ekko-lightbox/ekko-lightbox.min.js">arguments</script>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+                onShow: function () {
+                    $('.modal-dialog').attr("style", "height: 42.875rem")
+                    $('.modal-body').attr("style", "height: 43.625rem")
+                }
+            });
+        });
+
+        $(document).on('click', '[data-toggle="restock"]', function (event) {
+            event.preventDefault();
+            $(this).ekkoLightbox({
+                onShow: function () {
+                    $('.modal-dialog').attr("style", "height: 17.875rem")
+                    $('.modal-body').attr("style", "height: 16.625rem")
+                }
+            });
+        });
+    });
+
+
+</script>
+
+
+

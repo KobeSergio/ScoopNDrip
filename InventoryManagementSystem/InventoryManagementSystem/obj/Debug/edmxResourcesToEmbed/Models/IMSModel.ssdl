@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IMSDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IMSDatabase.dbo.users' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="tinyint" Nullable="false" />
+    <Property Name="user_username" Type="varchar" MaxLength="50" />
+    <Property Name="user_pass" Type="varchar" MaxLength="50" />
+    <Property Name="user_role" Type="varchar" MaxLength="50" />
+    <Property Name="user_name" Type="varchar" MaxLength="50" />
+    <Property Name="user_address" Type="varchar" MaxLength="50" />
+    <Property Name="user_email" Type="varchar" MaxLength="50" />
+    <Property Name="user_status" Type="bit" />
+    <Property Name="user_contact" Type="int" />
+    <Property Name="user_timestamp" Type="datetime" />
+  </EntityType>
+  <EntityContainer Name="IMSDatabaseModelStoreContainer">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="users" EntityType="Self.users" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [users].[user_id] AS [user_id], 
+    [users].[user_username] AS [user_username], 
+    [users].[user_pass] AS [user_pass], 
+    [users].[user_role] AS [user_role], 
+    [users].[user_name] AS [user_name], 
+    [users].[user_address] AS [user_address], 
+    [users].[user_email] AS [user_email], 
+    [users].[user_status] AS [user_status], 
+    [users].[user_contact] AS [user_contact], 
+    [users].[user_timestamp] AS [user_timestamp]
+    FROM [dbo].[users] AS [users]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,359 @@
+﻿
+@{
+    ViewBag.Title = "PointOfSales";
+    //Verification and layout
+    if (Session["userRole"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+    else
+    {
+        if (Session["userRole"].ToString() == "Admin")
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
+        else if (Session["userRole"].ToString() == "Employee")
+        {
+            Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+        }
+    }
+} 
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Scoop N' Drip</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Scoop N' Drip Menu</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Invoice</h3>
+                </div> 
+                <div class="row">
+                    <div class="col-12 table-responsive">
+                        <table id="tblInvoice" class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Qty</th>
+                                    <th>Product</th>
+                                    <th>Series</th>
+                                    <th>Date</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer col-12">
+                        <button type="button" id ="btnSave" class="btn btn-success float-right">
+                            <i class="far fa-credit-card"></i> Finish Order
+                        </button>
+                        <button type="button" id ="btnCancel" onclick="return confirm('Are you sure you want to cancel orders?')" class="btn btn-danger float-left" style="margin-right: 5px;">
+                            <i class="fas fa-stop-circle"></i> Cancel Order
+                        </button>
+                    </div>
+                </div> 
+            </div> 
+        </div>
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Menu</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                        @foreach (var series in ViewBag.Series)
+                        {
+                        <div class="card collapsed-card">
+                            <div class="card-header">
+                                <h3 class="card-title">@series.series_name</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach (var product in ViewBag.Products)
+                                    {
+                                        if (product.product_series == series.series_id)
+                                        { 
+                                            <div class="col-xs-6 col-6">
+                                                @if (product.product_image != null)
+                                                {
+                                                    var base64 = Convert.ToBase64String(product.product_image);
+                                                    var imgsrc = string.Format("data:image/gif; base64, {0}", base64);
+
+
+                                                    <div class="card collapsed-card img-fluid">
+                                                        <div class="card-header" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                                            <h5 class="card-title" id="productName">@product.product_name</h5>
+                                                            <h1 class="card-title float-md-right" style="font-size: small">Php. @product.product_price</h1>
+                                                        </div>
+                                                        <div class="card-body" style="padding-bottom: 0">
+                                                            <img class="card-img-top" src="@imgsrc" alt="Card image cap" style="opacity: 0.2">
+                                                            <br />
+                                                            <br />
+                                                            <dl class="dl-horizontal">
+                                                                <dt>Description</dt>
+                                                                <dd>@product.product_narration</dd>
+                                                            </dl>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label class="ui-controlgroup-label">Ingredients</label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="ui-controlgroup-label">Amount</label>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="ui-controlgroup-label">Unit</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    @Html.Raw(Html.Encode(product.product_ingredients).Replace("|", "<br /> "))
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    @Html.Raw(Html.Encode(product.product_amounts).Replace("|", "<br /> "))
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    @Html.Raw(Html.Encode(product.product_units).Replace("|", "<br />"))
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                            <dl class="dl-horizontal">
+                                                                <dd>
+                                                                    <p>Product Created: <b>@product.product_created.ToString("yyyy-MM-dd")</b> </p>
+                                                                </dd>
+                                                            </dl>
+                                                        </div>
+                                                        <div class="card-footer">
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <b>Qty: </b>
+                                                                    <input type="text" id="prodQty" class="col-2" style="margin-left: 10px; margin-top: 5px">
+                                                                    @if (product.isAvailable == true)
+                                                                    {
+                                                                        <button type="button" id="btnAdd" value="@product.product_id" class="btn btn-success float-right">
+                                                                            Add to order <i class="fa fa-plus" style="margin-left: 5px"></i>
+                                                                        </button>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <button disabled type="button" id="btnAdd" value="@product.product_id" class="btn btn-success float-right">
+                                                                            OUT OF STOCK <i class="fa fa-plus" style="margin-left: 5px"></i>
+                                                                        </button>
+                                                                    }
+                                                                </div> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                            <div class="card collapsed-card">
+                                                <div class="card-header" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                                    <h5 class="card-title" id="productName">@product.product_name</h5>
+                                                    <h1 class="card-title float-md-right" style="font-size: small">Php. @product.product_price</h1>
+                                                </div>
+                                                <div class="card-body" style="padding-bottom: 0">
+                                                    <dl class="dl-horizontal">
+                                                        <dt>Description</dt>
+                                                        <dd>@product.product_narration</dd>
+                                                    </dl>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="ui-controlgroup-label">Ingredients</label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="ui-controlgroup-label">Amount</label>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="ui-controlgroup-label">Unit</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            @Html.Raw(Html.Encode(product.product_ingredients).Replace("|", "<br /> "))
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            @Html.Raw(Html.Encode(product.product_amounts).Replace("|", "<br /> "))
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            @Html.Raw(Html.Encode(product.product_units).Replace("|", "<br />"))
+                                                        </div>
+                                                    </div>
+                                                    <br /> 
+                                                    <dl class="dl-horizontal">
+                                                        <dd>
+                                                            <p>Product Created: <b>@product.product_created.ToString("yyyy-MM-dd")</b> </p>
+                                                        </dd> 
+                                                    </dl> 
+                                                </div>
+                                                <div class="card-footer">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <b>Qty: </b>
+                                                            <input type="text" id="prodQty" class="col-2" style="margin-left: 10px; margin-top: 5px">
+                                                            @if (product.isAvailable == true)
+                                                            {
+                                                                <button type="button" id="btnAdd" value="@product.product_id" class="btn btn-success float-right">
+                                                                    Add to order <i class="fa fa-plus" style="margin-left: 5px"></i>
+                                                                </button>
+                                                            }
+                                                            else 
+                                                            {
+                                                                <button disabled type="button" id="btnAdd" value="@product.product_id" class="btn btn-success float-right">
+                                                                    OUT OF STOCK <i class="fa fa-plus" style="margin-left: 5px"></i>
+                                                                </button>
+                                                            } 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <p class="p-md-2">Series Created: <b>@series.series_created.ToString("yyyy-MM-dd")</b> </p>
+                                <p class="p-md-2"> @series.series_info</p>
+                            </div>
+                            <!-- /.card-footer-->
+                        </div>
+                        }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js" integrity="sha512-uWk2ZXl3GVrq6DZsrL5dSg1S/F3MNQ9VaDFigqXOoKUnWG58UxOuJGfTrzh5KjpoBvPiFniL2PahU2HUTFMJXw==" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+        function removeRow(button) {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+            if (confirm("Do you want to remove order?")) {
+                //Get the reference of the Table.
+                var table = $("#tblInvoice")[0];
+
+                //Delete the Table row using it's Index.
+                table.deleteRow(row[0].rowIndex);
+            
+            }
+    };
+
+    $(document).ready(function () {     
+        $("body").on("click", "#btnAdd", function () {
+            var prodQty = $(this).prev('input').val();
+            if (prodQty == "") {
+                alert("Please input quantity!");
+            } else {
+                if ($.isNumeric(prodQty) == true) {
+                    var prodID = $(this).attr('value');
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/GetOrderDetails",
+                        data: '{ product_id: ' + JSON.stringify(prodID) + ', product_price: ' + JSON.stringify(prodQty) + '}',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (item) {
+                            var prodName = item.name;
+                            var prodSeries = item.series;
+                            var prodPrice = item.price;
+                            var prodDate = item.date;
+
+                            //Get the reference of the Table's TBODY element.
+                            var tBody = $("#tblInvoice > TBODY")[0];
+
+                            //Add Row.
+                            var row = tBody.insertRow(-1);
+
+                            //Add Qty cell.
+                            cell = $(row.insertCell(-1));
+                            cell.html(prodQty);
+
+                            //Add Name cell.
+                            var cell = $(row.insertCell(-1));
+                            cell.html(prodName);
+
+                            //Add Series Cell
+                            cell = $(row.insertCell(-1));
+                            cell.html(prodSeries);
+
+                            //Add Date Cell
+                            cell = $(row.insertCell(-1));
+                            cell.html(prodDate);
+
+                            //Add Subtotal cell.
+                            cell = $(row.insertCell(-1));
+                            cell.html(prodPrice);
+
+
+                            //Add Button cell.
+                            cell = $(row.insertCell(-1));
+                            var button = $("<button />").attr("type", "button").text("Remove");
+                            button.attr("onclick", "removeRow(this)");
+                            cell.append(button);
+                        }
+                    });
+                } else {
+                    alert("Please input numbers only!");
+                }
+                
+            }
+             
+        });  
+
+        $("body").on("click", "#btnSave", function () {
+            //Loop through the Table rows and build a JSON array.
+            var orders = new Array();
+            $("#tblInvoice TBODY TR").each(function () {
+                var row = $(this);
+                var order = {};
+                order.order_quantity = row.find("TD").eq(0).html();
+                order.order_productName = row.find("TD").eq(1).html();  
+                orders.push(order);
+            });
+
+            //Send the JSON array to Controller using AJAX.
+            $.ajax({
+                type: "POST",
+                url: "/Admin/InsertOrders",
+                data: JSON.stringify(orders),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r);
+                    location.reload();
+                }
+            });
+        });
+        $("body").on("click", "#btnCancel", function () { 
+            $("#tblInvoice > TBODY").empty();  
+        });
+
+    });
+</script>
